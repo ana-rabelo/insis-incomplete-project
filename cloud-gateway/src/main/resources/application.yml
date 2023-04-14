@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+      - id: get-product-reviews
+        uri: lb://insis-review-command
+        predicates:
+        - Method=POST,PUT,PATCH,DELETE
+        - Path=/products/{sku}/reviews/**
+
+      - id: insis-review-command
+        uri: lb://insis-review-command
+        predicates:
+        - Method=POST,PUT,PATCH,DELETE
+        - Path=/reviews/**
+
+      - id: insis-review-query
+        uri: lb://insis-review-query
+        predicates:
+        - Method=GET
+        - Path=/reviews/**
+
+      - id: insis-product-command
+        uri: lb://insis-product-command
+        predicates:
+        - Method=POST,PUT,PATCH,DELETE
+        - Path=/products/**
+
+      - id: insis-product-query
+        uri: lb://insis-product-query
+        predicates:
+        - Method=GET
+        - Path=/products/**
+
+      - id: insis-vote-command
+        uri: lb://insis-vote-command
+        predicates:
+        - Method=POST,PUT,PATCH,DELETE
+        - Path=/votes/**
+
+      - id: insis-vote-query
+        uri: lb://insis-vote-query
+        predicates:
+        - Method=GET
+        - Path=/votes/**
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/

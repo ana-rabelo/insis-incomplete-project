@@ -1,0 +1,111 @@
+version: "3.9"
+services:
+
+  rabbitmq:
+    container_name: insis-message-broker
+    image: rabbitmq:3.11.10-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    networks:
+      - insis-network
+
+  cloud-gateway:
+    image: insis-cloud-gateway
+    build:
+      context: ./cloud-gateway
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - insis-network
+
+  eureka-server:
+    image: insis-eureka-server
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - 8761:8761
+    networks:
+      - insis-network
+
+  product-command:
+    image: insis-product-command
+    build:
+      context: ./insis-product-command
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  product-query:
+    image: insis-product-query
+    build:
+      context: ./insis-product-query
+      dockerfile: Dockerfile
+    networks:
+      - insis-network 
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/ 
+
+  review-command:
+    image: insis-review-command
+    build:
+      context: ./insis-review-command
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  review-query:
+    image: insis-review-query
+    build:
+      context: ./insis-review-query
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  vote-command:
+    image: insis-vote-command
+    build:
+      context: ./insis-vote-command
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+  vote-query:
+    image: insis-vote-query
+    build:
+      context: ./insis-vote-query
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+networks:
+  insis-network:
+    name: insis-network
+    driver: bridge

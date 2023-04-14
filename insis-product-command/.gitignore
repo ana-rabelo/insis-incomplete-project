@@ -1,0 +1,52 @@
+HELP.md
+data/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+target/
+.bloop/
+.bsp/
+
+# The index where we store project mappings for local benchmarks
+.local-benchmarks
+
+bloop-config/
+out/
+.DS_Store
+website/build/
+website/build/bloop-gh-pages/
+node_modules/
+package-lock.json
+.metals/
+**/metals.sbt
+*.lock
+benchmark-bridge/corpus/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
