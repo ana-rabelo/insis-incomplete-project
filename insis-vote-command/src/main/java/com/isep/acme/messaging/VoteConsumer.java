@@ -22,7 +22,7 @@ public class VoteConsumer {
     private VoteService voteService;
 
     @RabbitListener(queues = "#{voteCreatedQueue}")
-    public void receiveCreatedReviewMessage(Message message) {
+    public void receiveCreatedVoteMessage(Message message) {
         try {
             String bodyMessage = new String(message.getBody(), "UTF-8");
             log.info("Received message for created vote: {}", bodyMessage);

@@ -2,7 +2,6 @@ package com.isep.acme.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +20,7 @@ import lombok.Setter;
 public class Review {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idReview;
 
 	@Column(nullable = false)
@@ -33,7 +32,7 @@ public class Review {
 	@Column(nullable = false)
 	private String funFact;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "product_sku", nullable = false)
 	private Product product;
 

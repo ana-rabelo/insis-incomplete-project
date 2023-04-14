@@ -3,10 +3,10 @@ package com.isep.acme.services.implementations;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isep.acme.controllers.ResourceNotFoundException;
-import com.isep.acme.dtos.ReviewDTO;
 import com.isep.acme.mappers.ReviewMapper;
 import com.isep.acme.model.Product;
 import com.isep.acme.model.Review;
@@ -26,12 +26,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
+    @Autowired
     ReviewRepository reviewRepository;
+
+    @Autowired
     ProductRepository productRepository;
+    
+    @Autowired
     UserRepository userRepository;
+
+    @Autowired
     UserService userService;
+    
+    @Autowired
     RatingService ratingService;
+    
+    @Autowired
     RestService restService;
+    
+    @Autowired
     ReviewMapper reviewMapper;
 
     @Override
@@ -50,6 +63,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<Review> getReviewsOfProduct(String sku, String status) {
 
+        log.info("Aqui o sku: {} e o status {}", sku, status);
+
         Product product = productRepository.findBySku(sku)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
@@ -62,19 +77,17 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Double getWeightedAverage(Product product) {
 
-        Optional<List<Review>> r = reviewRepository.findByProductId(product);
-
-        if (r.isEmpty())
-            return 0.0;
+        List<Review> reviews = reviewRepository.findByProductId(product)
+                            .orElseThrow(() -> new IllegalArgumentException("There is no reviews for this product"));
 
         double sum = 0;
 
-        for (Review rev : r.get()) {
+        for (Review rev : reviews) {
             Double rate = rev.getRating();
             sum += rate;
         }
 
-        return sum / r.get().size();
+        return sum / reviews.size();
     }
 
     @Override
@@ -94,15 +107,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDTO> findPendingReview() {
+    public List<Review> findPendingReview() {
 
-        Optional<List<Review>> r = reviewRepository.findPendingReviews();
+        List<Review> r = reviewRepository.findPendingReviews()
+                                    .orElseThrow(() -> new IllegalArgumentException("There is no pending reviews"));
 
-        if (r.isEmpty()) {
-            return null;
-        }
-
-        return reviewMapper.toDtoList(r.get());
+        return r;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.isep.acme.model.Product;
 
@@ -12,14 +13,17 @@ public class ProductMapper {
     
     public Product createProductFromMessage(String body){
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Product product = objectMapper.readValue(body, Product.class);
-            return new Product(product.getSku());
+            JsonNode json = new ObjectMapper().readTree(body);
+            String sku = json.get("sku").asText();
+
+            Product product = new Product(sku);
+
+            return product;
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-    
 }
 

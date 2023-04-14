@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.isep.acme.dtos.ReviewDTO;
 import com.isep.acme.model.Product;
 import com.isep.acme.model.Review;
 
@@ -21,7 +20,7 @@ public interface ReviewService {
 
 	Boolean deleteReview(Long reviewId);
 
-	List<ReviewDTO> findPendingReview();
+	List<Review> findPendingReview();
 
 	Review moderateReview(Long reviewID, String approved);
 

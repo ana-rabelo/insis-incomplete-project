@@ -11,8 +11,6 @@ import com.isep.acme.services.AggregatedRatingService;
 import com.isep.acme.services.ProductService;
 import com.isep.acme.services.ReviewService;
 
-import java.util.Optional;
-
 @Service
 public class AggregatedRatingServiceImpl implements AggregatedRatingService {
 
@@ -31,26 +29,23 @@ public class AggregatedRatingServiceImpl implements AggregatedRatingService {
 	@Override
 	public AggregatedRating save(String sku) {
 
-		Optional<Product> product = pRepository.findBySku(sku);
+		Product product = pRepository.findBySku(sku)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + sku));
 
-		if (product.isEmpty()) {
-			return null;
-		}
+		Double average = rService.getWeightedAverage(product);
 
-		Double average = rService.getWeightedAverage(product.get());
-
-		Optional<AggregatedRating> r = arRepository.findByProductId(product.get());
+		AggregatedRating r = arRepository.findByProductId(product)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + sku));
 		AggregatedRating aggregateF;
 
-		if (r.isPresent()) {
-			r.get().setAverage(average);
-			aggregateF = arRepository.save(r.get());
+		if (r != null) {
+			r.setAverage(average);
+			aggregateF = arRepository.save(r);
 		} else {
-			AggregatedRating f = new AggregatedRating(average, product.get());
+			AggregatedRating f = new AggregatedRating(average, product);
 			aggregateF = arRepository.save(f);
 		}
-
+        
 		return aggregateF;
 	}
-
 }

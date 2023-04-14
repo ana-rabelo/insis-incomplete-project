@@ -29,7 +29,6 @@ public class VoteController {
 
     @Autowired
     private final VoteService voteService;
-    private final VoteMapper voteMapper;
     @Autowired
     private final ReviewService reviewService;
 

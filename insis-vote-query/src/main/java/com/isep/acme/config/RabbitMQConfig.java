@@ -28,11 +28,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue voteUpdatedQueue() {
-        return new Queue("votes.vote-updated." + applicationName + "." + instanceID);
-    }
-
-    @Bean
     public Queue voteDeletedQueue() {
         return new Queue("votes.vote-deleted." + applicationName + "." + instanceID);
     }
@@ -58,11 +53,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public FanoutExchange voteUpdatedExchange() {
-        return new FanoutExchange("ms.votes.vote-updated");
-    }
-
-    @Bean
     public FanoutExchange voteDeletedExchange() {
         return new FanoutExchange("ms.votes.vote-deleted");
     }
@@ -85,11 +75,6 @@ public class RabbitMQConfig {
     @Bean
     public Binding voteCreatedBinding(Queue voteCreatedQueue, FanoutExchange voteCreatedExchange) {
         return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
-    }
-
-    @Bean
-    public Binding voteUpdatedBinding(Queue voteUpdatedQueue, FanoutExchange voteUpdatedExchange) {
-        return BindingBuilder.bind(voteUpdatedQueue).to(voteUpdatedExchange);
     }
 
     @Bean

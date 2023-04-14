@@ -43,7 +43,7 @@ class ProductController {
 
             return new ResponseEntity<ProductDTO>(productDTO, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Product must have a unique SKU.");
         }
     }

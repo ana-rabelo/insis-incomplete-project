@@ -2,6 +2,7 @@ package com.isep.acme.services.implementations;
 
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isep.acme.controllers.ResourceNotFoundException;
@@ -16,26 +17,33 @@ import com.isep.acme.services.RestService;
 import com.isep.acme.services.ReviewService;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
+    @Autowired
     ReviewRepository reviewRepository;
+    
+    @Autowired
     ProductRepository productRepository;
 
+    @Autowired
     RatingService ratingService;
+    
+    @Autowired
     RestService restService;
+    
+    @Autowired
     ProductService productService;
 
+    @Autowired
     ReviewMapper reviewMapper;
 
     @Override
     public Review create(final Review review, final Product product) {
 
-        String funfact = restService.getFunFact(LocalDate.now());
+        String funfact = restService.getFunFact(LocalDate.now());   
 
         review.setFunFact(funfact);
         review.setProduct(product);

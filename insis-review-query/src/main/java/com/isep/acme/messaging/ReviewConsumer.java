@@ -41,7 +41,8 @@ public class ReviewConsumer {
     public void receiveUpdatedReviewMessage(Message message) {
         try {
             String bodyMessage = new String(message.getBody(), "UTF-8");
-            Review review = reviewMapper.createReviewFromMessage(bodyMessage);
+            Review review = reviewMapper.createReviewDTO(bodyMessage);
+
             log.info("Received message for updated review ID: {}", review.getIdReview());
 
             reviewService.moderateReview(review.getIdReview(), review.getApprovalStatus());

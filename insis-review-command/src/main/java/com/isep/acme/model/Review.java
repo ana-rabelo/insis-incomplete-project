@@ -4,23 +4,26 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idReview;
 
     @Column(nullable = false)
@@ -32,7 +35,7 @@ public class Review {
     @Column(nullable = false)
     private String funFact;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_sku", nullable = false)
     private Product product;
 
@@ -41,9 +44,6 @@ public class Review {
 
     @Column(nullable = false)
     private Double rating;
-
-    public Review() {
-    }
 
     public Review(final Long idReview,
             final String approvalStatus,

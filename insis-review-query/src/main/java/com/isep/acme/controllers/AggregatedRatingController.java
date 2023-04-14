@@ -13,13 +13,13 @@ import com.isep.acme.services.AggregatedRatingService;
 
 @Tag(name = "AggregatedRating", description = "Endpoints for managing aggregated Rating")
 @RestController
-@RequestMapping("/aggregatedrating")
+@RequestMapping("/reviews")
 public class AggregatedRatingController {
 
 	@Autowired
 	AggregatedRatingService aService;
 
-	@GetMapping(value = "/{sku}")
+	@GetMapping(value = "/aggregatedrating/{sku}")
 	ResponseEntity<AggregatedRating> getAverage(@PathVariable("sku") final String sku) {
 
 		AggregatedRating a = aService.save(sku);

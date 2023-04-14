@@ -39,17 +39,16 @@ public class ReviewConsumer {
     @RabbitListener(queues = "#{reviewUpdatedQueue}")
     public void receiveUpdatedReviewMessage(Message message) {
         try {
-            
-            log.info("CHEGANDO AQUI");
+    
             String bodyMessage = new String(message.getBody(), "UTF-8");
-            Review review = reviewMapper.createReviewFromMessage(bodyMessage);
+            Review review = reviewMapper.createReviewDTO(bodyMessage);
+            
             log.info("Received message for updated review ID: {}", review.getIdReview());
 
             reviewService.moderateReview(review.getIdReview(), review.getApprovalStatus());
             log.info("Review {} updated successfully to status {}",
                     review.getIdReview(),
                     review.getApprovalStatus());
-
         } catch (Exception e) {
             log.error("Error receiving updated review message: {}", e.getMessage());
         }

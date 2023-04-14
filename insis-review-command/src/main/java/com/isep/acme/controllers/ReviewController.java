@@ -1,5 +1,6 @@
 package com.isep.acme.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,9 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class ReviewController {
 
+    @Autowired
     private ReviewService reviewService;
+    
+    @Autowired
     private ProductService productService;
 
+    @Autowired
     private ReviewProducer reviewProducer;
 
     private ReviewMapper reviewMapper;
@@ -77,9 +82,12 @@ class ReviewController {
             @RequestBody String status) {
             Review review = reviewService.moderateReview(reviewID, status);
 
-            log.info("Review set to {} successfully", review.getApprovalStatus());
+            log.info("Sending message to update review {} and product {}", 
+                                                            review.getIdReview(), 
+                                                            review.getProduct().getSku());
 
-            reviewProducer.sendUpdatedReviewMessage(review);
+            ReviewDTO reviewDTO = reviewMapper.toDto(review);
+            reviewProducer.sendUpdatedReviewMessage(reviewDTO);
             
             return new ResponseEntity<Review>(review, HttpStatus.CREATED);
      }
