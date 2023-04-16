@@ -22,6 +22,11 @@ public class RabbitMQConfig {
 
     @Value("${spring.application.instance_id}")
     private String instanceID;
+ 
+    @Bean
+    public Queue voteCreatedQueue() {
+        return new Queue("votes.vote-created." + applicationName + "." + instanceID);
+    }
 
     @Bean
     public Queue reviewCreatedQueue() {
@@ -49,6 +54,12 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public FanoutExchange voteCreatedExchange() {
+        return new FanoutExchange("ms.votes.vote-created");
+    }
+
+
+    @Bean
     public FanoutExchange reviewCreatedExchange() {
         return new FanoutExchange("ms.reviews.review-created");
     }
@@ -72,6 +83,12 @@ public class RabbitMQConfig {
     public FanoutExchange productDeletedExchange() {
         return new FanoutExchange("ms.products.product-deleted");
     }
+
+    @Bean
+    public Binding voteCreatedBinding(Queue voteCreatedQueue, FanoutExchange voteCreatedExchange) {
+        return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
+    }
+
 
     @Bean
     public Binding reviewCreatedBinding(Queue reviewCreatedQueue, FanoutExchange reviewCreatedExchange) {

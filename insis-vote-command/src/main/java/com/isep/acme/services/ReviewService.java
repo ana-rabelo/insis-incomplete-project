@@ -3,7 +3,6 @@ package com.isep.acme.services;
 import org.springframework.stereotype.Service;
 
 import com.isep.acme.model.Review;
-import com.isep.acme.model.Vote;
 
 @Service
 public interface ReviewService {
@@ -12,7 +11,7 @@ public interface ReviewService {
 
     Review save(Review review);
 
-    boolean addVoteToReview(Long reviewID, Vote vote);
+    // boolean addVoteToReview(Long reviewID, Vote vote);
 
     Review moderateReview(Long reviewID, String approved);
 

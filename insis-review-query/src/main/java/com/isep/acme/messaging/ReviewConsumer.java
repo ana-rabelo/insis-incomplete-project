@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.isep.acme.mappers.ReviewMapper;
 import com.isep.acme.model.Review;
+import com.isep.acme.repositories.ReviewRepository;
 import com.isep.acme.services.ReviewService;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewConsumer {
 
     private final ReviewService reviewService;
+    private ReviewRepository reviewRepository;
     private ReviewMapper reviewMapper;
 
     @RabbitListener(queues = "#{reviewCreatedQueue}")
@@ -42,15 +44,11 @@ public class ReviewConsumer {
         try {
             String bodyMessage = new String(message.getBody(), "UTF-8");
             Review review = reviewMapper.createReviewDTO(bodyMessage);
-
             log.info("Received message for updated review ID: {}", review.getIdReview());
-
-            reviewService.moderateReview(review.getIdReview(), review.getApprovalStatus());
-            log.info("Review {} updated successfully to status {}",
-                    review.getIdReview(),
-                    review.getApprovalStatus());
+            reviewRepository.save(review);
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error receiving updated review message: {}", e.getMessage());
         }
     }

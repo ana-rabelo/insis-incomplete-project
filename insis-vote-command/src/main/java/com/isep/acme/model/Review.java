@@ -22,14 +22,13 @@ import lombok.Setter;
 public class Review {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idReview;
 
     @Column(nullable = false)
     private String approvalStatus;
 
-    @OneToMany(mappedBy = "review")
-    private Set<Vote> votes = new HashSet<>();
+    // @OneToMany(mappedBy = "review")
+    // private Set<Vote> votes = new HashSet<>();
 
     public Boolean setApprovalStatus(String approvalStatus) {
 
@@ -43,10 +42,10 @@ public class Review {
         return false;
     }
 
-    public void addVote(Vote vote) {
-        if (this.approvalStatus.equals("approved"))
-            this.votes.add(vote);
-        else
-            throw new IllegalArgumentException("Review is not approved");
-    }
+    // public void addVote(Vote vote) {
+    //     if (this.approvalStatus.equals("approved"))
+    //         this.votes.add(vote);
+    //     else
+    //         throw new IllegalArgumentException("Review is not approved");
+    // }
 }

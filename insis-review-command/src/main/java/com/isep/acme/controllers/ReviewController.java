@@ -39,14 +39,13 @@ class ReviewController {
     @Autowired
     private ReviewProducer reviewProducer;
 
-    private ReviewMapper reviewMapper;
 
     @Operation(summary = "creates review")
     @PostMapping("/products/{sku}/reviews")
     public ResponseEntity<Review> createReview(@PathVariable(value = "sku") final String sku,
             @RequestBody CreateReviewDTO createReviewDTO) {
 
-        Review review = reviewMapper.toReview(createReviewDTO);
+        Review review = ReviewMapper.toReview(createReviewDTO);
         Product product = productService
                 .findBySku(sku)
                 .orElseThrow(() -> new ResourceNotFoundException("sku"));
@@ -70,25 +69,25 @@ class ReviewController {
             return ResponseEntity.notFound().build();
 
         if (rev == false)
-            return ResponseEntity.unprocessableEntity().build();
-
+            return ResponseEntity.badRequest().build()  ;
+        
         reviewProducer.sendDeletedReviewMessage(reviewID);
         return ResponseEntity.ok().body(rev);
     }
 
     @Operation(summary = "Accept or reject review")
     @PatchMapping("/reviews/acceptreject/{reviewID}")
-    public ResponseEntity<Review> putAcceptRejectReview(@PathVariable(value = "reviewID") final Long reviewID,
+    public ResponseEntity<ReviewDTO> putAcceptRejectReview(@PathVariable(value = "reviewID") final Long reviewID,
             @RequestBody String status) {
             Review review = reviewService.moderateReview(reviewID, status);
 
             log.info("Sending message to update review {} and product {}", 
                                                             review.getIdReview(), 
                                                             review.getProduct().getSku());
-
-            ReviewDTO reviewDTO = reviewMapper.toDto(review);
+            ReviewDTO reviewDTO = ReviewMapper.toDto(review);
+            System.out.println(reviewDTO.getVotes());
             reviewProducer.sendUpdatedReviewMessage(reviewDTO);
             
-            return new ResponseEntity<Review>(review, HttpStatus.CREATED);
+            return new ResponseEntity<ReviewDTO>(reviewDTO, HttpStatus.CREATED);
      }
 }

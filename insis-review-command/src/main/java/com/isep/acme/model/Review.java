@@ -1,14 +1,27 @@
 package com.isep.acme.model;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.isep.acme.dtos.VoteDTO;
+import com.isep.acme.dtos.VoteReviewDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +57,9 @@ public class Review {
 
     @Column(nullable = false)
     private Double rating;
+    
+    @OneToMany(mappedBy="review", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Vote> votes = new HashSet<Vote>();
 
     public Review(final Long idReview,
             final String approvalStatus,
@@ -104,4 +120,15 @@ public class Review {
 
         this.reviewText = reviewText;
     }
+
+    public Set<Vote> getVotes() {
+        return votes;
+    }
+
+    public void addVote(Vote vote) {
+        votes.add(vote);
+        vote.setReview(this);
+    }
+
+  
 }

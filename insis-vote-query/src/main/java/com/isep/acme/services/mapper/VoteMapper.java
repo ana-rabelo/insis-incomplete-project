@@ -1,20 +1,46 @@
 package com.isep.acme.services.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.isep.acme.dtos.VoteDTO;
 import com.isep.acme.model.Vote;
-import com.isep.acme.services.dto.VoteDTO;
+import com.isep.acme.model.enumerate.voteType;
+@Component
+public class VoteMapper {
 
-@Mapper(componentModel = "spring")
-public interface VoteMapper {
+    public VoteDTO toDTO(Vote vote) {
+        if ( vote == null ) {
+            return null;
+        }
 
-    VoteDTO toDTO(Vote vote);
+        VoteDTO voteDTO = new VoteDTO();
 
-    Vote toEntity(VoteDTO voteDTO);
+        voteDTO.setVoteType( vote.getVoteType() );
 
-    Vote toEntity(String vote);
+        return voteDTO;
+    }
 
+
+    public Vote toEntity(VoteDTO voteDTO) {
+        Vote vote = new Vote();
+        vote.setVoteID(voteDTO.getVoteId());
+        vote.setVoteType(voteDTO.getVoteType());
+        return vote;
+    }
+    public VoteDTO toDTOFromMessage(String vote) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            VoteDTO voteDTO = mapper.readValue(vote, VoteDTO.class);
+            return voteDTO;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /* @Mapping(source = "review_id", target = "reviewId")
     VoteDTO toDTOWithReviewId(Vote vote); */
 }

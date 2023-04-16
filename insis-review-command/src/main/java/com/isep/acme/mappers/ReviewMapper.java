@@ -2,35 +2,53 @@ package com.isep.acme.mappers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.isep.acme.controllers.ResourceNotFoundException;
 import com.isep.acme.dtos.ReviewDTO;
+import com.isep.acme.dtos.VoteReviewDTO;
 import com.isep.acme.dtos.usecases.CreateReviewDTO;
 import com.isep.acme.model.Product;
 import com.isep.acme.model.Review;
+import com.isep.acme.model.Vote;
+import com.isep.acme.model.enumerate.voteType;
 import com.isep.acme.services.ProductService;
-
 @Component
 public class ReviewMapper {
 
     @Autowired
     private ProductService productservice;
-
+ 
     public static ReviewDTO toDto(Review review) {
-        return new ReviewDTO(
-                review.getIdReview(),
-                review.getProduct().getSku(),
-                review.getReviewText(),
-                review.getUserName(),
-                review.getApprovalStatus(),
-                review.getFunFact(),
-                review.getRating());
+       ReviewDTO reviewDTO = new ReviewDTO();
+        Set<VoteReviewDTO> votesDTO = new HashSet<VoteReviewDTO>();
+       
+        for (Vote vote : review.getVotes()) {
+            VoteReviewDTO voteDTO = new VoteReviewDTO( 
+                vote.getVoteID(),
+                vote.getVoteType()
+            );
+            votesDTO.add(voteDTO);
+        }
+
+        reviewDTO.setIdReview(review.getIdReview());
+        reviewDTO.setProductSku(review.getProduct().getSku());
+        reviewDTO.setReviewText(review.getReviewText());
+        reviewDTO.setUserName(review.getUserName());
+        reviewDTO.setApprovalStatus(review.getApprovalStatus());
+        reviewDTO.setFunFact(review.getFunFact());
+        reviewDTO.setRating(review.getRating());
+        reviewDTO.setVotes(votesDTO);
+
+        return reviewDTO;
     }
 
     public static CreateReviewDTO toCreateReviewDTO(Review review) {
@@ -73,6 +91,7 @@ public class ReviewMapper {
 
     public Review createReviewFromMessage(String body) {
         try {
+
             ObjectMapper objectMapper = new ObjectMapper();
             Review review = objectMapper.readValue(body, Review.class);
             return review;
@@ -84,6 +103,7 @@ public class ReviewMapper {
 
     public Review createReviewDTO(String body){
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode json = new ObjectMapper().readTree(body);
             Long idReview = json.get("idReview").asLong();
             String productSku = json.get("productSku").asText();
@@ -92,7 +112,8 @@ public class ReviewMapper {
             String approvalStatus = json.get("approvalStatus").asText();
             String funFact = json.get("funFact").asText();
             Double rating = json.get("rating").asDouble();
-            
+            Set<Vote> votes = objectMapper.readValue(json.get("votes").toString(), new TypeReference<HashSet<Vote>>(){});
+            System.out.println(votes);
             Product product = productservice
                     .findBySku(productSku)
                     .orElseThrow(() -> new ResourceNotFoundException("Product not found."));
@@ -105,6 +126,7 @@ public class ReviewMapper {
             reviewCreated.setApprovalStatus(approvalStatus);
             reviewCreated.setFunFact(funFact);
             reviewCreated.setRating(rating);
+            reviewCreated.setVotes(votes);
 
             return reviewCreated;
 

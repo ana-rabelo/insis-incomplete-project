@@ -3,8 +3,10 @@ package com.isep.acme.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,9 +26,10 @@ public class Review {
     @Column(nullable = false)
     private String approvalStatus = "pending";
 
-    @OneToMany(mappedBy = "review")
-    private Set<Vote> votes = new HashSet<>();
-
+    
+    @OneToMany(mappedBy="review", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Vote> votes = new HashSet<Vote>();
+    
     public Boolean setApprovalStatus(String approvalStatus) {
 
         if (approvalStatus.equalsIgnoreCase("pending") ||

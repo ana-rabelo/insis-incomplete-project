@@ -5,12 +5,13 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.isep.acme.dtos.VoteDTO;
 import com.isep.acme.model.Review;
 import com.isep.acme.model.Vote;
+import com.isep.acme.model.enumerate.voteType;
 import com.isep.acme.repositories.ReviewRepository;
 import com.isep.acme.repositories.VoteRepository;
 import com.isep.acme.services.VoteService;
-import com.isep.acme.services.dto.VoteDTO;
 
 @Service
 public class VoteServiceImpl implements VoteService {
@@ -22,9 +23,8 @@ public class VoteServiceImpl implements VoteService {
     private ReviewRepository reviewRepository;
 
     public Vote create(VoteDTO voteDTO) {
-        Review review = reviewRepository.findById(voteDTO.getReviewId())
-                .orElseThrow(() -> new EntityNotFoundException("Review with id " + voteDTO.getReviewId() + " not found"));
-
+        Review review = reviewRepository.findById(voteDTO.getIdReview())
+                .orElseThrow(() -> new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " not found"));
         Vote vote = new Vote();
         vote.setVoteType(voteDTO.getVoteType());
         vote.setReview(review);
@@ -41,8 +41,8 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public Vote updateVote(Vote vote, String voteType){
-        vote.setVoteType(voteType);
+    public Vote updateVote(Vote vote, String type){
+        vote.setVoteType(type == "UPVOTE" ? voteType.UPVOTE : voteType.DOWNVOTE);
         return voteRepository.save(vote);
     }
 

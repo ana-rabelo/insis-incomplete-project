@@ -131,7 +131,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<Review> findReviewsByUser(String user) {
 
         Optional<List<Review>> reviews = reviewRepository.findByUser(user);
-
+        
         return reviews.get();
     }
 }

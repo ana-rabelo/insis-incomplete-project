@@ -11,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.isep.acme.dtos.VoteDTO;
 import com.isep.acme.model.enumerate.voteType;
-import com.isep.acme.services.dto.VoteDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,21 +25,27 @@ import lombok.NoArgsConstructor;
 public class Vote {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long voteID;
 
     @Column
     @Enumerated(EnumType.STRING)
     private voteType voteType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "review_id")
     private Review review;
 
+    @Override
+    public String toString() {
+        return "Vote [voteID=" + voteID + ", voteType=" + voteType + "]";
+    }
     public VoteDTO toDto() {
         return new VoteDTO(this.voteID,
                 this.voteType,
                 this.review.getIdReview());
     }
 
+    public void addReview(Review review) {
+        this.review = review;
+    }
 }

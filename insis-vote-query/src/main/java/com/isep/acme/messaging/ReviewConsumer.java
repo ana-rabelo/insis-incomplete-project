@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.isep.acme.model.Review;
+import com.isep.acme.repositories.ReviewRepository;
 import com.isep.acme.services.ReviewService;
 import com.isep.acme.services.mapper.ReviewMapper;
 
@@ -22,6 +23,9 @@ public class ReviewConsumer {
     
     @Autowired
     private ReviewMapper reviewMapper;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @RabbitListener(queues = "#{reviewCreatedQueue}")
     public void receiveCreatedReviewMessage(Message message) {
@@ -45,12 +49,9 @@ public class ReviewConsumer {
         try {
             String bodyMessage = new String(message.getBody(), "UTF-8");
             Review review = reviewMapper.createReviewFromMessage(bodyMessage);
+        
             log.info("Received message for updated review ID: {}", review.getIdReview());
-
-            reviewService.moderateReview(review.getIdReview(), review.getApprovalStatus());
-            log.info("Review {} updated successfully to status {}",
-                    review.getIdReview(),
-                    review.getApprovalStatus());
+            reviewRepository.save(review);
 
         } catch (Exception e) {
             log.error("Error receiving updated review message: {}", e.getMessage());

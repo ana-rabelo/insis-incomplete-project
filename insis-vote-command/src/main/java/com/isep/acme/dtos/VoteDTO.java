@@ -1,16 +1,18 @@
-package com.isep.acme.services.dto;
+package com.isep.acme.dtos;
 
 import com.isep.acme.model.enumerate.voteType;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoteDTO {
     private long voteId;
     private voteType voteType;
-    private long reviewId;
+    private long idReview;
 }

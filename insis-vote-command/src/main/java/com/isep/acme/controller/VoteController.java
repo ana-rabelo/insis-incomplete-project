@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.isep.acme.dtos.VoteDTO;
+import com.isep.acme.messaging.VoteProducer;
+import com.isep.acme.model.Review;
 import com.isep.acme.model.Vote;
 import com.isep.acme.services.ReviewService;
 import com.isep.acme.services.VoteService;
-import com.isep.acme.services.dto.VoteDTO;
 import com.isep.acme.services.mapper.VoteMapper;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,14 +34,15 @@ public class VoteController {
     @Autowired
     private final ReviewService reviewService;
 
+    @Autowired
+    private VoteProducer voteProducer;
+
     @Operation(summary = "creates a vote")
     @PostMapping
     public ResponseEntity<VoteDTO> createVote(@RequestBody VoteDTO voteDTO) {
-
         Vote createdVote = voteService.create(voteDTO);
-        reviewService.addVoteToReview(createdVote.getReview().getIdReview(), createdVote);
-        log.info("Vote {} for review {} created.", createdVote.getVoteType(), createdVote.getVoteID());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(voteDTO);
+        log.info("Vote {} for review {} created.", voteDTO.getVoteType(), voteDTO.getIdReview());
+        voteProducer.sendCreatedVoteMessage(createdVote.toDto());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdVote.toDto());
     }
 }

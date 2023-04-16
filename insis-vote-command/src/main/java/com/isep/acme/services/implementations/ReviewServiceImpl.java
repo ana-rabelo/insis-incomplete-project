@@ -31,19 +31,19 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.save(review);
     }
 
-    @Override
-    public boolean addVoteToReview(Long reviewID, Vote vote) {
+    // @Override
+    // public boolean addVoteToReview(Long reviewID, Vote vote) {
 
-        Optional<Review> review = this.reviewRepository.findById(reviewID);
+    //     Optional<Review> review = this.reviewRepository.findById(reviewID);
 
-        if (review.isEmpty())
-            return false;
-        else {
-            review.get().addVote(vote);
-            voteRepository.save(vote);
-        }
-        return true;
-    }
+    //     if (review.isEmpty())
+    //         return false;
+    //     else {
+    //         review.get().addVote(vote);
+    //         voteRepository.save(vote);
+    //     }
+    //     return true;
+    // }
 
     @Override
     public Boolean deleteReview(Long reviewId) {

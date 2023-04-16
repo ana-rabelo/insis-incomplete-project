@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.isep.acme.dtos.ReviewDTO;
+import com.isep.acme.mappers.ReviewMapper;
 import com.isep.acme.model.Review;
 import com.isep.acme.services.ReviewService;
 
@@ -21,35 +23,40 @@ class ReviewController {
 	@Autowired
 	private ReviewService rService;
 
+	@Autowired
+	private ReviewMapper reviewMapper;
 
 	@Operation(summary = "finds a product through its sku and shows its review by status")
 	@GetMapping("/reviews/{status}/products/{sku}")
-	public ResponseEntity<List<Review>> findById(@PathVariable(value = "sku") final String sku,
+	public ResponseEntity<List<ReviewDTO>> findById(@PathVariable(value = "sku") final String sku,
 			@PathVariable(value = "status") final String status) {
 
 		List<Review> reviews = rService.getReviewsOfProduct(sku, status);
-        
-        //List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+    
+        List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
 
-		return ResponseEntity.ok().body(reviews);
+		return ResponseEntity.ok().body(reviewDTOs);
 	}
 
 	@Operation(summary = "gets review by user")
 	@GetMapping("/reviews/{user}")
-	public ResponseEntity<List<Review>> findReviewByUser(@PathVariable(value = "user") final String user) {
+	public ResponseEntity<List<ReviewDTO>> findReviewByUser(@PathVariable(value = "user") final String user) {
 
 		List<Review> reviews = rService.findReviewsByUser(user);
-        //List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+        List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+		
 
-		return ResponseEntity.ok().body(reviews);
+		return ResponseEntity.ok().body(reviewDTOs);
 	}
 
 	@Operation(summary = "gets pending reviews")
 	@GetMapping("/reviews/pending")
-	public ResponseEntity<List<Review>> getPendingReview() {
+	public ResponseEntity<List<ReviewDTO>> getPendingReview() {
 
 		List<Review> reviews = rService.findPendingReview();
-		return ResponseEntity.ok().body(reviews);
+
+		List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+		return ResponseEntity.ok().body(reviewDTOs);
 	}
 
 }

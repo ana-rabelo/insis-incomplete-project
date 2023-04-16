@@ -25,6 +25,7 @@ public class ReviewConsumer {
     @RabbitListener(queues = "#{reviewCreatedQueue.name}")
     public void receiveCreatedReviewMessage(Message message) {
         try {
+ 
             String bodyMessage = new String(message.getBody(), "UTF-8");
             log.info("Received message for created review: {}", bodyMessage);
 
@@ -43,8 +44,8 @@ public class ReviewConsumer {
     @RabbitListener(queues = "#{reviewUpdatedQueue}")
     public void receiveUpdatedReviewMessage(Message message) {
         try {
-
             String bodyMessage = new String(message.getBody(), "UTF-8");
+            log.info("Received message for updated review: {}", bodyMessage);
             Review review = reviewMapper.createReviewFromMessage(bodyMessage);
             log.info("Received message for updated review ID: {}", review.getIdReview());
 

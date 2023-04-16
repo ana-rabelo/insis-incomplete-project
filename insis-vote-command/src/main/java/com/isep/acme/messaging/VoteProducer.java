@@ -4,8 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.isep.acme.model.Vote;
-
+import com.isep.acme.dtos.VoteDTO;
 @Component
 public class VoteProducer {
 
@@ -16,8 +15,8 @@ public class VoteProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
     
-    public void sendCreatedVoteMessage(Vote vote) {
-        rabbitTemplate.convertAndSend("ms.votes.vote-created", "", vote);
+    public void sendCreatedVoteMessage(VoteDTO voteDTO) {
+        rabbitTemplate.convertAndSend("ms.votes.vote-created", "", voteDTO);
     }
 
     public void sendDeletedVoteMessage(Long voteID) {
