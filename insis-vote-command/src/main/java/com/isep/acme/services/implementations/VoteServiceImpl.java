@@ -25,6 +25,9 @@ public class VoteServiceImpl implements VoteService {
     public Vote create(VoteDTO voteDTO) {
         Review review = reviewRepository.findById(voteDTO.getIdReview())
                 .orElseThrow(() -> new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " not found"));
+        if (review.getApprovalStatus().equalsIgnoreCase("pending")){
+            throw new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " is pending");
+        }
         Vote vote = new Vote();
         vote.setVoteType(voteDTO.getVoteType());
         vote.setReview(review);
