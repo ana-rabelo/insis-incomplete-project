@@ -32,29 +32,29 @@ services:
     networks:
       - insis-network
 
-  # product-command:
-  #   image: insis-product-command
-  #   build:
-  #     context: ./insis-product-command
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - insis-network
-  #   depends_on:
-  #     - eureka-server
-  #   environment:
-  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+  product-command:
+    image: insis-product-command
+    build:
+      context: ./insis-product-command
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
 
-  # product-query:
-  #   image: insis-product-query
-  #   build:
-  #     context: ./insis-product-query
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - insis-network
-  #   depends_on:
-  #     - eureka-server
-  #   environment:
-  #     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+  product-query:
+    image: insis-product-query
+    build:
+      context: ./insis-product-query
+      dockerfile: Dockerfile
+    networks:
+      - insis-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
 
   review-command:
     image: insis-review-command
