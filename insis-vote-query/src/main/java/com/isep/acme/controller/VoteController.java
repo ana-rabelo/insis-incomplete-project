@@ -22,13 +22,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class VoteController {
 
-    @Autowired
-    private final VoteService voteService;
-    
-    @GetMapping("/{voteId}")
-    public ResponseEntity<VoteDTO> getVoteById(@PathVariable Long voteId) {
-        VoteDTO vote = voteService.getVotesById(voteId);
+	@Autowired
+	private final VoteService voteService;
+
+	@GetMapping("/{voteId}")
+	public ResponseEntity<VoteDTO> getVoteById(@PathVariable Long voteId) {
+		VoteDTO vote = voteService.getVotesById(voteId);
 		return ResponseEntity.ok().body(vote);
-    }
- 
+	}
+
+	@GetMapping("")
+	public ResponseEntity<List<VoteDTO>> getVotes() {
+		List<VoteDTO> vote = voteService.getVotes();
+		return ResponseEntity.ok().body(vote);
+	}
+
 }

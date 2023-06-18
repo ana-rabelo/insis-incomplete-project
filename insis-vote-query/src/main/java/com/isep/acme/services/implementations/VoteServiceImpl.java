@@ -1,5 +1,6 @@
 package com.isep.acme.services.implementations;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,39 +20,47 @@ import com.isep.acme.services.VoteService;
 @Service
 public class VoteServiceImpl implements VoteService {
 
-    @Autowired
-    private VoteRepository voteRepository;
+	@Autowired
+	private VoteRepository voteRepository;
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+	@Autowired
+	private ReviewRepository reviewRepository;
 
-    public Vote create(VoteDTO voteDTO) {
-        try {
-            Vote vote = new Vote();
-            System.out.println("Review: " + voteDTO.getIdReview());
-            Review review = reviewRepository.findById(voteDTO.getIdReview()).orElseThrow(() -> new ResourceNotFoundException("Review not found"));        
-            System.out.println("Review: " + review.getVotes());
-            vote.addReview(review);
-            vote.setVoteType(voteDTO.getVoteType());
-            vote.setVoteID(voteDTO.getVoteId());
-            return voteRepository.save(vote);
-          
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("Error adding vote to review");
-        }
-       
-    }
+	public Vote create(VoteDTO voteDTO) {
+		try {
+			Vote vote = new Vote();
+			System.out.println("Review: " + voteDTO.getIdReview());
+			Review review = reviewRepository.findById(voteDTO.getIdReview())
+					.orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+			System.out.println("Review: " + review.getVotes());
+			vote.addReview(review);
+			vote.setVoteType(voteDTO.getVoteType());
+			vote.setUser(voteDTO.getUser());
+			vote.setVoteID(voteDTO.getVoteId());
+			return voteRepository.save(vote);
 
-    @Override
-    public VoteDTO getVotesById(long idVote) {
-        Vote vote = voteRepository.findById(idVote).orElseThrow(() -> new EntityNotFoundException("Vote not found"));
-        VoteDTO voteDTO = new VoteDTO();
-        voteDTO.setVoteId(vote.getVoteID());
-        voteDTO.setVoteType(vote.getVoteType());
-        voteDTO.setIdReview(vote.getReview().getIdReview());
-        return voteDTO;
-    }
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException("Error adding vote to review");
+		}
 
-  
+	}
+
+	@Override
+	public VoteDTO getVotesById(long idVote) {
+		Vote vote = voteRepository.findById(idVote).orElseThrow(() -> new EntityNotFoundException("Vote not found"));
+		VoteDTO voteDTO = new VoteDTO();
+		voteDTO.setVoteId(vote.getVoteID());
+		voteDTO.setVoteType(vote.getVoteType());
+		voteDTO.setIdReview(vote.getReview().getIdReview());
+		voteDTO.setUser(vote.getUser());
+
+		return voteDTO;
+	}
+
+	@Override
+	public List<VoteDTO> getVotes() {
+		return voteRepository.findAll().stream().map(v -> v.toDto()).collect(Collectors.toList());
+	}
+
 }

@@ -18,18 +18,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Vote {
 
-    @Id
-    private long voteID;
+	@Id
+	private long voteID;
 
-    @Column
-    private voteType voteType;
+	@Column
+	private voteType voteType;
 
-    @ManyToOne
-    @JoinColumn(name = "review_id")
-    private Review review;
+	@ManyToOne
+	@JoinColumn(name = "review_id")
+	private Review review;
 
-    @Override
-    public String toString() {
-        return "Vote [voteID=" + voteID + ", voteType=" + voteType + "]";
-    }
+	@Column
+	private String user;
+
+	@Override
+	public String toString() {
+		return "Vote [voteID=" + voteID + ", voteType=" + voteType + ", user=" + user + "]";
+}
 }

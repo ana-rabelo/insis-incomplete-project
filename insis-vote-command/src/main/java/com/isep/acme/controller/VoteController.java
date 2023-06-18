@@ -34,6 +34,7 @@ public class VoteController {
     @Autowired
     private final ReviewService reviewService;
 
+
     @Autowired
     private VoteProducer voteProducer;
 

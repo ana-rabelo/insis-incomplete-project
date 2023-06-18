@@ -59,4 +59,24 @@ class ReviewController {
 		return ResponseEntity.ok().body(reviewDTOs);
 	}
 
+    @Operation(summary = "gets approved reviews")
+	@GetMapping("/reviews/approved")
+	public ResponseEntity<List<ReviewDTO>> getApprovedReview() {
+
+		List<Review> reviews = rService.findApprovedReview();
+
+		List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+		return ResponseEntity.ok().body(reviewDTOs);
+	}
+
+    /* @Operation(summary = "get all votes of a review")
+	@GetMapping("/reviews/{id}/votes")
+	public ResponseEntity<List<ReviewDTO>> getApprovedReview() {
+
+		List<Review> reviews = rService.findApprovedReview();
+
+		List<ReviewDTO> reviewDTOs = reviewMapper.toDtoList(reviews);
+		return ResponseEntity.ok().body(reviewDTOs);
+	} */
+
 }

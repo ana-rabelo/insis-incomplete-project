@@ -16,42 +16,43 @@ import com.isep.acme.services.VoteService;
 @Service
 public class VoteServiceImpl implements VoteService {
 
-    @Autowired
-    private VoteRepository voteRepository;
-    
-    @Autowired
-    private ReviewRepository reviewRepository;
+	@Autowired
+	private VoteRepository voteRepository;
 
-    public Vote create(VoteDTO voteDTO) {
-        Review review = reviewRepository.findById(voteDTO.getIdReview())
-                .orElseThrow(() -> new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " not found"));
-        if (review.getApprovalStatus().equalsIgnoreCase("pending")){
-            throw new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " is pending");
-        }
-        Vote vote = new Vote();
-        vote.setVoteType(voteDTO.getVoteType());
-        vote.setReview(review);
+	@Autowired
+	private ReviewRepository reviewRepository;
 
-        return voteRepository.save(vote);
-    }
+	public Vote create(VoteDTO voteDTO) {
+		Review review = reviewRepository.findById(voteDTO.getIdReview())
+				.orElseThrow(() -> new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " not found"));
+		if (review.getApprovalStatus().equalsIgnoreCase("pending")) {
+			throw new EntityNotFoundException("Review with id " + voteDTO.getIdReview() + " is pending");
+		}
+		Vote vote = new Vote();
+		vote.setVoteType(voteDTO.getVoteType());
+		vote.setUser(voteDTO.getUser());
+		vote.setReview(review);
 
-    @Override
-    public VoteDTO getVoteById(long id) {
-        Vote vote = voteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vote with id " + id + " not found"));
+		return voteRepository.save(vote);
+	}
 
-        return vote.toDto();
-    }
+	@Override
+	public VoteDTO getVoteById(long id) {
+		Vote vote = voteRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Vote with id " + id + " not found"));
 
-    @Override
-    public Vote updateVote(Vote vote, String type){
-        vote.setVoteType(type == "UPVOTE" ? voteType.UPVOTE : voteType.DOWNVOTE);
-        return voteRepository.save(vote);
-    }
+		return vote.toDto();
+	}
 
-    @Override
-    public void deleteById(Long voteId){
-        voteRepository.deleteById(voteId);
-    }
+	@Override
+	public Vote updateVote(Vote vote, String type) {
+		vote.setVoteType(type == "UPVOTE" ? voteType.UPVOTE : voteType.DOWNVOTE);
+		return voteRepository.save(vote);
+	}
+
+	@Override
+	public void deleteById(Long voteId) {
+		voteRepository.deleteById(voteId);
+	}
 
 }

@@ -19,6 +19,9 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
 	@Query("SELECT r FROM Review r WHERE r.approvalStatus='pending'")
 	Optional<List<Review>> findPendingReviews();
 
+    @Query("SELECT r FROM Review r WHERE r.approvalStatus='approved'")
+	Optional<List<Review>> findApprovedReview();
+
 	@Query("SELECT r FROM Review r WHERE r.product=:product AND r.approvalStatus=:status")
 	Optional<List<Review>> findByProductIdStatus(Product product, String status);
 

@@ -116,6 +116,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<Review> findApprovedReview() {
+
+        List<Review> r = reviewRepository.findApprovedReview()
+                                    .orElseThrow(() -> new IllegalArgumentException("There is no approved reviews"));
+
+        return r;
+    }
+
+    @Override
     public Review moderateReview(Long reviewID, String status)
             throws ResourceNotFoundException, IllegalArgumentException {
 

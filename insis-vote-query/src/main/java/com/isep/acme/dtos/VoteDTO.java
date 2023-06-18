@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoteDTO {
-    private long voteId;
-    private voteType voteType;
-    private long idReview;
-} 
+	private long voteId;
+	private voteType voteType;
+	private String user;
+	private long idReview;
+}

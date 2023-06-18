@@ -16,38 +16,40 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class VoteConsumer {
-    
-    private VoteService voteService;
 
-    private VoteMapper voteMapper;
-    @RabbitListener(queues = "#{voteCreatedQueue}")
-    public void receiveCreatedVoteMessage(Message message) {
-        try {
-            String bodyMessage = new String(message.getBody(), "UTF-8");
-            log.info("Received message for created vote: {}", bodyMessage);
+	private VoteService voteService;
 
-            VoteDTO voteDTO = voteMapper.toDTOFromMessage(bodyMessage);
-            System.out.println(voteDTO.getIdReview());
-            System.out.println(voteDTO.getVoteId());
-            voteService.create(voteDTO);
+	private VoteMapper voteMapper;
 
-            log.info("Vote created successfully.");
+	@RabbitListener(queues = "#{voteCreatedQueue}")
+	public void receiveCreatedVoteMessage(Message message) {
+		try {
+			String bodyMessage = new String(message.getBody(), "UTF-8");
+			log.info("Received message for created vote: {}", bodyMessage);
 
-        } catch (Exception e) {
-            log.error("Error receving message.", e.getMessage());
-        }
-    }
+			VoteDTO voteDTO = voteMapper.toDTOFromMessage(bodyMessage);
+			System.out.println(voteDTO.getIdReview());
+			System.out.println(voteDTO.getVoteId());
+			System.out.println(voteDTO.getUser());
+			voteService.create(voteDTO);
 
-    // @RabbitListener(queues = "#{voteDeletedQueue}")
-    // public void receiveDeletedVoteMessage(Message message) {
-    //     try {
-    //         String voteId = new String(message.getBody(), "UTF-8");
-    //         log.info("Received message for deleted vote ID: {}", voteId);
+			log.info("Vote created successfully.");
 
-    //         voteService.deleteById(Long.parseLong(voteId));
+		} catch (Exception e) {
+			log.error("Error receving message.", e.getMessage());
+		}
+	}
 
-    //     } catch (Exception e) {
-    //         log.error("Error receiving deleted vote message: {}", e.getMessage());
-    //     }
-    // }
+	// @RabbitListener(queues = "#{voteDeletedQueue}")
+	// public void receiveDeletedVoteMessage(Message message) {
+	// try {
+	// String voteId = new String(message.getBody(), "UTF-8");
+	// log.info("Received message for deleted vote ID: {}", voteId);
+
+	// voteService.deleteById(Long.parseLong(voteId));
+
+	// } catch (Exception e) {
+	// log.error("Error receiving deleted vote message: {}", e.getMessage());
+	// }
+	// }
 }

@@ -24,28 +24,33 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Vote {
 
-    @Id
-    private long voteID;
+	@Id
+	private long voteID;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private voteType voteType;
+	@Column
+	@Enumerated(EnumType.STRING)
+	private voteType voteType;
 
-    @ManyToOne
-    @JoinColumn(name = "review_id")
-    private Review review;
+	@Column
+	private String user;
 
-    @Override
-    public String toString() {
-        return "Vote [voteID=" + voteID + ", voteType=" + voteType + "]";
-    }
-    public VoteDTO toDto() {
-        return new VoteDTO(this.voteID,
-                this.voteType,
-                this.review.getIdReview());
-    }
+	@ManyToOne
+	@JoinColumn(name = "review_id")
+	private Review review;
 
-    public void addReview(Review review) {
-        this.review = review;
-    }
+	@Override
+	public String toString() {
+		return "Vote [voteID=" + voteID + ", voteType=" + voteType + ", user=" + user + "]";
+	}
+
+	public VoteDTO toDto() {
+		return new VoteDTO(this.voteID,
+				this.voteType,
+				this.user,
+				this.review.getIdReview());
+	}
+
+	public void addReview(Review review) {
+		this.review = review;
+	}
 }

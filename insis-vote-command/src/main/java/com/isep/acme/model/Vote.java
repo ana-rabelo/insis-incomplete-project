@@ -21,22 +21,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Vote {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long voteID;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long voteID;
 
-    @Column
-    private voteType voteType;
+	@Column
+	private voteType voteType;
 
-    @ManyToOne
-    @JoinColumn(name = "review_id")
-    private Review review;
+	@Column
+	private String user;
 
-    public VoteDTO toDto() {
-        return new VoteDTO(
-                this.voteID,
-                this.voteType,
-                this.review.getIdReview());
-    }
+	@ManyToOne
+	@JoinColumn(name = "review_id")
+	private Review review;
+
+	public VoteDTO toDto() {
+		return new VoteDTO(
+				this.voteID,
+				this.voteType,
+				this.user,
+				this.review.getIdReview());
+	}
 
 }
